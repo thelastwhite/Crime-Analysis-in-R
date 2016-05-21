@@ -7,17 +7,19 @@ git commit -m "first commit"
 git remote add origin https://github.com/thelastwhite/Crime-Analysis-in-R.git
 git push -u origin master
 
-
+```
 library(ggplot2)
 library(ggmap)
 library(magrittr)
 
 geocode("Sheffield")
-
+```
 # imput crime data
+```
 mydata1=read.csv("/Users/mac/Desktop/Data Science/INF6027 Introduction to Data Science /Coursework/2015-09/2014-10/2014-10-south-yorkshire-street.csv", header = TRUE, sep = ",") 
-
+```
 # only violent crimes
+```
 violent_crimes <- subset(mydata1,
                            Crime.type != "Other theft" &
                            Crime.type != "Bicycle theft" &
@@ -31,8 +33,9 @@ violent_crimes <- subset(mydata1,
 )
 
 nrow(violent_crimes)
-
+```
 # rank violent crimes
+```
 violent_crimes$Crime.type <-
   factor(violent_crimes$Crime.type,
          levels = c("Robbery","Violence and sexual offences", "Vehicle crime",
@@ -46,11 +49,15 @@ violent_crimes <- subset(violent_crimes,
 
 
 getGeoCode("Sheffiled")
+```
 # get map and bounding box
+```
 theme_set(theme_bw(16))
 SheffiledMap <- qmap("sheffiled", zoom = 13, color = "bw")
-
+```
 # the bubble chart
+
+```
 library(grid)
 SheffiledMap +
   geom_point(aes(x = Longitude, y = Latitude, colour = Crime.type, size = Crime.type), data = violent_crimes) +
@@ -64,9 +71,10 @@ SheffiledMap +
     legend.text = element_text(size = 14)
   ) +
   labs(colour = "Crime.type", size = "Crime.type")
-
+```
 
 # doing it with qmplot is even easier
+```
 qmplot(Longitude, Latitude, data = violent_crimes, maptype = "toner-lite",
        color = Crime.type, size = Crime.type, legend = "right"
 ) +
@@ -80,8 +88,9 @@ qmplot(Longitude, Latitude, data = violent_crimes, maptype = "toner-lite",
     legend.text = element_text(size = 14)
   ) +
   labs(colour = "Crime.type", size = "Crime.type")
-
+```
 # a contour plot
+```
 SheffiledMap +
   stat_density2d(aes(x = Longitude, y = Latitude, colour = Crime.type),
                  size = 2, bins = 2, alpha = 3/4, data = violent_crimes) +
@@ -95,34 +104,40 @@ SheffiledMap +
 
 sheffield <- get_map("sheffield", zoom = 14)
 SheffiledMap <- ggmap(sheffield, extent = "device", legend = "right")
-
+```
 # a filled contour plot...
+
+```
 SheffiledMap  +
   stat_density2d(aes(x = Longitude, y = Latitude, fill = ..level.., alpha = ..level..),
                  size = 2, bins = 4, data = violent_crimes12, geom = "polygon") +
   scale_fill_gradient("Violent\nCrime\nDensity") +
   scale_alpha(range = c(.4, .75), guide = FALSE) +
   guides(fill = guide_colorbar(barwidth = 1.5, barheight = 10))
-  
+  ```
   
   
   # count crime number
+  ```
   nrow(violent_crimes)
-
-
+  ```
+ #SUMMARY MONTH 
+ ```
 Month <- c("10","11","12","01","02","03","04","05","06","07","08","09")
 Numbers <- c(nrow(violent_crimes1),nrow(violent_crimes2),nrow(violent_crimes3),nrow(violent_crimes4),nrow(violent_crimes5),nrow(violent_crimes6),nrow(violent_crimes7),nrow(violent_crimes8),nrow(violent_crimes9),nrow(violent_crimes10),nrow(violent_crimes11),nrow(violent_crimes12))
 dataframe1 <- data.frame(Month, Numbers)
 dataframe1
-
+ 
 
 ggplot(dataframe1, aes(x = Month, y = Numbers)) + geom_line()
 
 p <- ggplot(dataframe1, aes(x = Month, y = Numbers,group = 1)) + geom_line()
 p + ylim(0, max(5000))
-
+ ```
 
 #densities
+
+```
 SheffiledMap +
   stat_density2d(aes(x = Longitude, y = Latitude, colour = Crime.type),
                  size = 2, bins = 2, alpha = 3/4, data = violent_crimes) +
@@ -208,4 +223,4 @@ SheffiledMap +
     legend.text = element_text(size = 15, vjust = .5),
     legend.title = element_text(size = 15,face="bold"),
     legend.key.size = unit(1.8,"lines")) 
-
+```
